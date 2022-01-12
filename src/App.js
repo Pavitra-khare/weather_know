@@ -9,14 +9,19 @@ function App() {
   const [city,setcity]= useState('Delhi');
   const [temp, settemp] = useState(null);
   useEffect(() => {
+    
   const fetchapi= async()=>{
     const url=`https://api.openweathermap.org/data/2.5/weather?q=${city}&units=metric&appid=777bb8726ada729cd62e99ae482583f6`;
     const response = await fetch(url);
     const datatake = await response.json();
     console.log(datatake);
     settemp(datatake);
-  }
-  fetchapi();
+  
+  
+}
+fetchapi();
+  
+
   }, [city]);
 
   const Cityfunc=(event)=>{
@@ -33,8 +38,32 @@ function App() {
 
   return `${day} ${date} ${month} ${year}`;
   }
+
+  const errorweather =(temp)=>{
+    
+      try{
+        (temp.weather[0].description).toUpperCase()
+      return <h2> {(temp.weather[0].description).toUpperCase()}</h2>
+      }
+      catch(error){
+       return <h2> " " </h2>
+      }
+      }
+
+  const errortemp =(temp)=>{
+try{
+  Math.round(temp.main.temp);
+  return <h1>{Math.round(temp.main.temp)}<sup>o</sup>C</h1>
+}
+catch(error){
+  return <p1> city not found </p1>
+}
+  }
+  
   return (
+    
    <>
+     <div>
      <div className="heading">
         <h1 className='head'>Weather-Know</h1>
      </div>
@@ -57,7 +86,12 @@ function App() {
           </div>
 
        </div>
-        <div className="weather-place">
+       {
+         (!temp )   ? (<h1>Enter valid city</h1>)
+       :
+       (
+       <div>
+       <div className="weather-place">
           
           <div className="place-name">
             <h2>{city}</h2>
@@ -69,27 +103,37 @@ function App() {
         </div>
        <div className="tempoutbox">
        <div className="tempinbox">
-        { 
-          temp ? <h1>{Math.round(temp.main.temp)} °C</h1> : <h1> </h1>
+        
+           {
+             errortemp(temp)
+           }
           
           
-          }
+          
           </div>
         </div>
         <div className="weather">
-          {temp?<h2>{
-          (temp.weather[0].description).toUpperCase()
-          }
-          </h2>
-          :
-          <h1>Enter valid city</h1>
-          }
+          
+        {
+         errorweather(temp)
+        }
+          
+          
+          
+          
+          
         </div>
+       </div>
+       )
+       }
+        
         </div>
 
 
 
      </div>
+     </div>
+     
    </>
 
   );
